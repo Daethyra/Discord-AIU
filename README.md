@@ -10,15 +10,15 @@ This Python script sends images to a specified Discord webhook. The script can b
 
 ## Requirements
 
-- Python 3.11 or higher
+- Python 3.10 or higher
 - `requests` library
 
 ## Installation
 
 1. Clone the repository or download the script.
-  `git clone git@github.com:Daethyra/Discord-Image-Webhook.git`
+   `git clone git@github.com:Daethyra/Discord-Image-Webhook.git`
 2. Install the `requests` library.
-  `pip install requests`
+   `pip install requests`
 
 ## Usage
 
