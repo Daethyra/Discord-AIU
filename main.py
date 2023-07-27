@@ -18,7 +18,7 @@ load_dotenv()
 WEBHOOK_URL = os.getenv('WEBHOOK_URL')
 RATE_LIMIT = float(os.getenv('RATE_LIMIT', 10))  # RATE_LIMIT in seconds
 RETRY_COUNT = int(os.getenv('RETRY_COUNT', 2))
-RETRY_DELAY = int(os.getenv('RETRY_DELAY', 5))
+RETRY_DELAY = float(os.getenv('RETRY_DELAY', 5))
 BACKOFF_BASE = int(os.getenv('BACKOFF_BASE', 15))  # Base delay for exponential backoff in seconds
 BACKOFF_CAP = int(os.getenv('BACKOFF_CAP', 30))  # Maximum delay for exponential backoff in seconds
 COOLDOWN_TIME = float(os.getenv('COOLDOWN_TIME', 15))  # Time to wait if being rate limited - (429 error)
@@ -46,7 +46,7 @@ semaphore = Semaphore(SEMAPHORE_VALUE)
 
 def compress_image(image_path: str) -> None:
     with Image.open(image_path) as img:
-        img.save(image_path, optimize=True, quality=30)
+        img.save(image_path, optimize=True, quality=85) # Compression Config: Downscale Percentage
 
 def send_image(webhook_url: str, image_path: str, image_name: str) -> str:
     # Acquire the semaphore
@@ -145,22 +145,25 @@ if __name__ == "__main__":
     sent_images = 0
     skipped_images = 0
     failed_images = 0
+    try:
+        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+            futures = [executor.submit(send_image, WEBHOOK_URL, str(image_path), image_path.name) for image_path in images]
+            for i, future in enumerate(as_completed(futures)):
+                status = future.result()
+                if status == "sent":
+                    sent_images += 1
+                elif status == "skipped":
+                    skipped_images += 1
+                elif status == "failed":
+                    failed_images += 1
 
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        futures = [executor.submit(send_image, WEBHOOK_URL, str(image_path), image_path.name) for image_path in images]
-        for i, future in enumerate(as_completed(futures)):
-            status = future.result()
-            if status == "sent":
-                sent_images += 1
-            elif status == "skipped":
-                skipped_images += 1
-            elif status == "failed":
-                failed_images += 1
+                logging.info(f"Progress: Sent {sent_images}, Skipped {skipped_images}, Failed {failed_images} of {total_images} images.")
 
-            logging.info(f"Progress: Sent {sent_images}, Skipped {skipped_images}, Failed {failed_images} of {total_images} images.")
+        logging.info(f"Finished: Sent {sent_images}, Skipped {skipped_images}, Failed {failed_images} of {total_images} images.")
 
-    logging.info(f"Finished: Sent {sent_images}, Skipped {skipped_images}, Failed {failed_images} of {total_images} images.")
-
-    # New code to retry failed images
-    failed_images = [image_path for future, image_path in zip(futures, images) if future.result() == "failed"]
-    retry_failed(failed_images)
+        # New code to retry failed images
+        failed_images = [image_path for future, image_path in zip(futures, images) if future.result() == "failed"]
+        retry_failed(failed_images)
+    except KeyboardInterrupt:
+        print("Interrupted by user, shutting down.")
+        executor.shutdown(wait=True)
