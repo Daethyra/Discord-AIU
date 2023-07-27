@@ -23,12 +23,14 @@ Previously known as Discord-Image-Webhook, Multi-Hooker is a versatile Python sc
 
 1. Clone the repository or download the script. 
 
-`git clone git@github.com:YourUsername/Multi-Hooker.git`
+   - `git clone https://github.com/Daethyra/Multi-hooker.git`
 
 2. Install [Poetry](https://python-poetry.org/docs/#installation) if you haven't already.
+   - `pip install --no-cache-dir -r requirements.txt`
+   
 3. Install the necessary libraries using Poetry. 
    
-poetry install
+   - `poetry install`
    
 
 ## Usage 🚀
@@ -37,14 +39,31 @@ Define your actual Discord webhook URL and other settings in a .env file in the 
 
 To send images from the current working directory:
 
-`python main.py`
+   - `python main.py`
 
 To send images from a specified folder:
 
-`python main.py /path/to/your/folder`
+   - `python main.py /path/to/your/folder`
 
 
-Enjoy the future of image sharing with Multi-Hooker! 🎈
+I hope you enjoy using Multi-Hooker! 🎈
 
 ## License
-This project is licensed under the terms of the [GNU_AGPL-License](./LICENSE).
+
+Multi-Hooker | LLM-Agent manager for webhook interactions and automated posting
+Copyright (C) 2023 Daethyra (Daemon Carino)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, *[get one by clicking here.](<https://www.gnu.org/licenses/>)*
+
+*This project is licensed under the terms of the [GNU_AGPL-License](./LICENSE).*
