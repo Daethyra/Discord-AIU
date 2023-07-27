@@ -16,9 +16,11 @@ load_dotenv()
 
 WEBHOOK_URL = os.getenv('WEBHOOK_URL')
 RATE_LIMIT = float(os.getenv('RATE_LIMIT', 10))  # RATE_LIMIT in seconds
-COOLDOWN_TIME = float(os.getenv('COOLDOWN_TIME', 15))  # COOLDOWN_TIME in seconds
-RETRY_COUNT = int(os.getenv('RETRY_COUNT', 1))
+RETRY_COUNT = int(os.getenv('RETRY_COUNT', 2))
 RETRY_DELAY = int(os.getenv('RETRY_DELAY', 5))
+BACKOFF_BASE = int(os.getenv('BACKOFF_BASE', 15))  # Base delay for exponential backoff in seconds
+BACKOFF_CAP = int(os.getenv('BACKOFF_CAP', 30))  # Maximum delay for exponential backoff in seconds
+COOLDOWN_TIME = float(os.getenv('COOLDOWN_TIME', 15))  # Time to wait if being rate limited - (429 error)
 MIN_FILE_SIZE = int(os.getenv('MIN_FILE_SIZE', 0)) # in bytes
 MAX_FILE_SIZE = int(os.getenv('MAX_FILE_SIZE', 20000000)) # in bytes, 20000000 bytes = 20 MB
 MIN_WIDTH = int(os.getenv('MIN_WIDTH', 256)) # in pixels
@@ -84,9 +86,10 @@ def send_image(webhook_url: str, image_path: str, image_name: str) -> str:
                     logging.error(f"Error sending image {image_name}: {response.status_code} - {response.text}")
         except Exception as e:
             logging.error(f"Failed to send image {image_name}: {str(e)}")
-
-        if RATE_LIMIT > 0:
-            sleep(RATE_LIMIT)
+        if attempt < RETRY_COUNT - 1:  # No need to sleep after the last attempt
+            backoff_time = min(BACKOFF_BASE * (2 ** attempt), BACKOFF_CAP)
+            logging.info(f"Sleeping for {backoff_time} seconds before next retry...")
+            sleep(backoff_time)
 
     logging.error(f"Failed to send image {image_name} after {RETRY_COUNT} attempts.")
     log_to_csv([image_name, 'Failed', 'Retries'])
