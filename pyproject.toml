@@ -1,0 +1,19 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "OptimizedImageTransmitter"
+version = "2"
+description = "Automagically upload your images to a Discord channel via webhook."
+authors = ["Daethyra dev-daethyra@protonmail.com"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Pillow = "^10.0.0"
+python-dotenv = "^0.21.1"
+requests = "^2.31.0"
+
+[tool.poetry.group.dev.dependencies]
+pyproject-toml = "^0.0.10"
+

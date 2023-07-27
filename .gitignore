@@ -2,6 +2,7 @@
 *.log
 logs
 staged-ideas
+images
 ======= GitHub's Python template =======
 
 # Byte-compiled / optimized / DLL files
