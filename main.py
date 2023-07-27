@@ -24,23 +24,24 @@ MAX_FILE_SIZE = int(os.getenv('MAX_FILE_SIZE', 20000000)) # in bytes, 20000000 b
 MIN_WIDTH = int(os.getenv('MIN_WIDTH', 256)) # in pixels
 MIN_HEIGHT = int(os.getenv('MIN_HEIGHT', 256)) # in pixels
 COMPRESS_IMAGES = os.getenv('COMPRESS_IMAGES', 'NO')  # YES to compress images, NO to keep original quality
+MAX_WORKERS = int(os.getenv('MAX_WORKERS', 2))  # Default to 2 if not set
 
 # Setup logging
-current_time = datetime.datetime.now().strftime("%H-%M")
+current_time = datetime.datetime.now().strftime("%d-%m-%H-%M")
 log_file = f'logs/upload_{current_time}.log'
 LOG_FILE = f'logs/log_{current_time}.csv'
 LOG_DIR = 'logs/'
 
 # Ensure log directory exists
 Path(LOG_DIR).mkdir(parents=True, exist_ok=True)
-logging.basicConfig(filename=log_file, filemode='a', format='%(asctime)s - %(levelname)s - %(message)s', level=logging.DEBUG)
+logging.basicConfig(filename=log_file, filemode='a', format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 # Create a session
 session = requests.Session()
 
 def compress_image(image_path: str) -> None:
     with Image.open(image_path) as img:
-        img.save(image_path, optimize=True, quality=85)
+        img.save(image_path, optimize=True, quality=30)
 
 def send_image(webhook_url: str, image_path: str, image_name: str) -> str:
     file_size = os.path.getsize(image_path)
@@ -107,12 +108,11 @@ def log_to_csv(log_data: List[str]) -> None:
     with open(LOG_FILE, 'a', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(log_data)
-
 def retry_failed(failed_images: List[Path]):
     if not failed_images:
         return
 
-    print("Some images failed to send. Do you want to retry them? (yes/no)")
+    print(f"Found {len(failed_images)} images that failed to send. Do you want to retry them? (yes/no)")
     answer = input().strip().lower()
     if answer == "yes":
         print("Retrying failed images...")
@@ -122,8 +122,11 @@ def retry_failed(failed_images: List[Path]):
                 if future.result() == "sent":
                     print(f"Successfully resent {image_path.name}")
                     failed_images.remove(image_path)
+                else:
+                    print(f"Failed to resend {image_path.name}")
     else:
         print("Not retrying failed images.")
+
 
 if __name__ == "__main__":
     folder_path = sys.argv[1] if len(sys.argv) > 1 else None
@@ -133,10 +136,9 @@ if __name__ == "__main__":
     skipped_images = 0
     failed_images = 0
 
-    with ThreadPoolExecutor() as executor:
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = [executor.submit(send_image, WEBHOOK_URL, str(image_path), image_path.name) for image_path in images]
-
-        for future in as_completed(futures):
+        for i, future in enumerate(as_completed(futures)):
             status = future.result()
             if status == "sent":
                 sent_images += 1
@@ -146,6 +148,8 @@ if __name__ == "__main__":
                 failed_images += 1
 
             logging.info(f"Progress: Sent {sent_images}, Skipped {skipped_images}, Failed {failed_images} of {total_images} images.")
+            if i % MAX_WORKERS == 0:  # sleep after every MAX_WORKERS images sent
+                sleep(RATE_LIMIT)
 
     logging.info(f"Finished: Sent {sent_images}, Skipped {skipped_images}, Failed {failed_images} of {total_images} images.")
 
