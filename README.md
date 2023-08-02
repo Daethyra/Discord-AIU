@@ -1,6 +1,8 @@
 # Multi-Hooker 🎣
 
-Previously known as Discord-Image-Webhook, Multi-Hooker is a versatile Python script that sends images to any number of Discord webhooks. It can work with images from a specified folder or even the current working directory. 
+Previously known as Discord-Image-Webhook, Multi-Hooker is a versatile Python script that sends images to any number of Discord webhooks. It can work with images from a specified folder or even the current working directory.
+
+Please see [Release v1.2]() for an automated webhook image-sender to a specified Discord webhook URL.
 
 ## Features 🌟
 
@@ -21,17 +23,15 @@ Previously known as Discord-Image-Webhook, Multi-Hooker is a versatile Python sc
 
 ## Installation 🛠️
 
-1. Clone the repository or download the script. 
+1. Clone the repository or download the script.
 
    - `git clone https://github.com/Daethyra/Multi-hooker.git`
-
 2. Install [Poetry](https://python-poetry.org/docs/#installation) if you haven't already.
+
    - `pip install --no-cache-dir -r requirements.txt`
-   
-3. Install the necessary libraries using Poetry. 
-   
+3. Install the necessary libraries using Poetry.
+
    - `poetry install`
-   
 
 ## Usage 🚀
 
@@ -39,12 +39,11 @@ Define your actual Discord webhook URL and other settings in a .env file in the 
 
 To send images from the current working directory:
 
-   - `python main.py`
+- `python main.py`
 
 To send images from a specified folder:
 
-   - `python main.py /path/to/your/folder`
-
+- `python main.py /path/to/your/folder`
 
 I hope you enjoy using Multi-Hooker! 🎈
 
@@ -64,6 +63,6 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, *[get one by clicking here.](<https://www.gnu.org/licenses/>)*
+along with this program.  If not, *[get one by clicking here.](https://www.gnu.org/licenses/)*
 
 *This project is licensed under the terms of the [GNU_AGPL-License](./LICENSE).*
