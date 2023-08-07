@@ -1,9 +1,6 @@
-# Multi-Hooker 🎣
+#### Please see ***[Release v1.2](https://github.com/Daethyra/Webhook-Automation/releases/tag/v1.2)*** for the Discord image uploader, an automated webhook interaction tool.
 
-Previously known as Discord-Image-Webhook, Multi-Hooker is a versatile Python script that sends images to any number of Discord webhooks. It can work with images from a specified folder or even the current working directory.
-
-Please see [Release v1.2]() for an automated webhook image-sender to a specified Discord webhook URL.
-
+## Multi-Hooker
 ## Features 🌟
 
 * **Support for Various Formats** 🖼️: Send images with .jpg, .jpeg, .png, .gif, and .bmp file extensions.
