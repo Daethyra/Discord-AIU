@@ -3,8 +3,8 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "OptimizedImageTransmitter"
-version = "2"
+name = "Discord-AIU"
+version = "1"
 description = "Automagically upload your images to a Discord channel via webhook."
 authors = ["Daethyra dev-daethyra@protonmail.com"]
 
