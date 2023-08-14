@@ -11,7 +11,7 @@ authors = ["Daethyra dev-daethyra@protonmail.com"]
 [tool.poetry.dependencies]
 python = "^3.10"
 Pillow = "^10.0.0"
-python-dotenv = "^0.21.1"
+python-dotenv = "^1.0.0"
 requests = "^2.31.0"
 
 [tool.poetry.group.dev.dependencies]
