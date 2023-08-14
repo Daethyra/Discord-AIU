@@ -26,7 +26,7 @@
    - `git clone https://github.com/Daethyra/Multi-hooker.git`
 2. Install [Poetry](https://python-poetry.org/docs/#installation) if you haven't already.
 
-   - `pip install --no-cache-dir -r requirements.txt`
+   - `pip install --no-cache-dir poetry`
 3. Install the necessary libraries using Poetry.
 
    - `poetry install`
