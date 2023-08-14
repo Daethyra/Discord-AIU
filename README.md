@@ -1,6 +1,6 @@
 #### Please see ***[Release v1.2](https://github.com/Daethyra/Webhook-Automation/releases/tag/v1.2)*** for the Discord image uploader, an automated webhook interaction tool.
 
-## Multi-Hooker
+## Discord-AIU (Automated Image Uploader)
 ## Features 🌟
 
 * **Support for Various Formats** 🖼️: Send images with .jpg, .jpeg, .png, .gif, and .bmp file extensions.
@@ -46,7 +46,7 @@ I hope you enjoy using Multi-Hooker! 🎈
 
 ## License
 
-Multi-Hooker | LLM-Agent manager for webhook interactions and automated posting
+Discord-AIU | Save time showing off your favorites.
 Copyright (C) 2023 Daethyra (Daemon Carino)
 
 This program is free software: you can redistribute it and/or modify
