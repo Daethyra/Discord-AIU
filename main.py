@@ -1,5 +1,5 @@
 """
-Multi-Hooker | LLM-Agent manager for webhook interactions and automated posting
+Discord-AIU | Save time showing off your favorites.
 Copyright (C) 2023 Daethyra (Daemon Carino)
 
 This program is free software: you can redistribute it and/or modify
