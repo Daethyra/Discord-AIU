@@ -1,6 +1,7 @@
-#### Please see ***[Release v1.2](https://github.com/Daethyra/Webhook-Automation/releases/tag/v1.2)*** for the Discord image uploader, an automated webhook interaction tool.
+##### Please see ***[Release v1.2](https://github.com/Daethyra/Webhook-Automation/releases/tag/v1.2)*** for the simple Discord image sender, a webhook interaction tool.
 
 ## Discord-AIU (Automated Image Uploader)
+
 ## Features 🌟
 
 * **Support for Various Formats** 🖼️: Send images with .jpg, .jpeg, .png, .gif, and .bmp file extensions.
