@@ -13,6 +13,7 @@
 * **Image Validation and Compression** 🖼️: We now check your images for size and dimensions before sending. Plus, there's an optional image compression feature to reduce data usage.
 * **Retry Failed Images** 🔁: If any images fail to send, don't worry! We've got a new retry option to ensure your images reach their destination.
 * **Progress Report** 📊: Stay informed with our new progress report, detailing the number of images sent, skipped, and failed.
+* **Logs:** Easily access logs in `.csv` and `.txt`. ([Example](.github/logs-example.jpg))
 
 ## Requirements 📌
 
