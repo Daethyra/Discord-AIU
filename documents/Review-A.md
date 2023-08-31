@@ -19,7 +19,7 @@
 
 Here is how you could refactor the `send_image` function and add custom exceptions for better error handling:
 
-<pre><div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>python</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-python">class ImageValidationError(Exception):
+```class ImageValidationError(Exception):
     pass
 
 def validate_image_size(image_path: str):
@@ -40,18 +40,15 @@ def send_image(webhook_url: str, image_path: str, image_name: str) -> str:
     except ImageValidationError as e:
         logging.info(f"Skipping {image_name} due to {str(e)}.")
         log_to_csv([image_name, 'Skipped', str(e)])
-        return "skipped"</code></div></div></pre>
-
+        return "skipped"
+```
 ---
-
-
 
 ### Dynamic Threading
 
 You can dynamically set the number of worker threads based on the number of images to send. For example:
 
-<pre><div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>python</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-python">MAX_WORKERS = min(10, len(images) // 10)  # 10 images per worker as an example
-</code></div></div></pre>
+`MAX_WORKERS = min(10, len(images) // 10)``  # 10 images per worker as an example
 
 ### Rate Limiter
 
@@ -59,19 +56,19 @@ Instead of using `sleep`, you can use a rate-limiting library like `ratelimiter`
 
 Install it with pip:
 
-<pre><div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>bash</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-bash">pip install ratelimiter
-</code></div></div></pre>
+`pip install ratelimiter`
 
 Here's how to use it:
 
-<pre><div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>python</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-python">from ratelimiter import RateLimiter
+```
+from ratelimiter import RateLimiter
 
 rate_limiter = RateLimiter(max_calls=10, period=1)  # 10 calls per second
 
 @rate_limiter
 def send_image():
     # Your existing send_image code
-</code></div></div></pre>
+```
 
 ### Structured Logging
 
@@ -79,7 +76,7 @@ Structured logging can be useful when you want to analyze logs later. Libraries 
 
 Here's an example of how you might set it up:
 
-<pre><div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>python</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-python">import structlog
+```import structlog
 
 structlog.configure(
     processors=[
@@ -92,13 +89,14 @@ structlog.configure(
 log = structlog.get_logger()
 
 log.info("Image sent", image_name=image_name, status_code=response.status_code)
-</code></div></div></pre>
+```
 
 ### Metrics Collection
 
 You can collect metrics using a simple counter dictionary or use a library like Prometheus to export metrics. Here's a simple example:
 
-<pre><div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>python</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-python">metrics = {"sent": 0, "skipped": 0, "failed": 0}
+```
+metrics = {"sent": 0, "skipped": 0, "failed": 0}
 
 # In your send_image function
 if status == "sent":
@@ -109,13 +107,14 @@ elif status == "failed":
     metrics["failed"] += 1
 
 # Log or export metrics
-</code></div></div></pre>
+```
 
 ### Message Queue for Retries
 
 Instead of immediately retrying failed sends, you could put them into a message queue like RabbitMQ or use Python's `queue.Queue` for a simpler in-memory solution. This way, failed messages are not lost and can be retried efficiently.
 
-<pre><div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>python</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-python">from queue import Queue
+```
+from queue import Queue
 
 failed_queue = Queue()
 
@@ -126,17 +125,18 @@ failed_queue.put(image_path)
 while not failed_queue.empty():
     retry_image = failed_queue.get()
     send_image(retry_image)
-</code></div></div></pre>
+```
 
 ### Real-time Progress Reporting
 
 You could use a library like `tqdm` to show real-time progress in the console.
 
-<pre><div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>python</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-python">from tqdm import tqdm
+```
+from tqdm import tqdm
 
 for i, future in tqdm(enumerate(as_completed(futures)), total=len(futures)):
-    # Your existing code</code></div></div></pre>
-
+    # Your existing code
+```
 
 ---
 
