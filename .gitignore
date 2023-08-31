@@ -1,8 +1,7 @@
 *.csv
 *.log
-logs
-staged-ideas
-images
+logs/*
+images/*
 ======= GitHub's Python template =======
 
 # Byte-compiled / optimized / DLL files
