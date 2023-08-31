@@ -1,4 +1,4 @@
-##### Please see ***[Release v1.2](https://github.com/Daethyra/Webhook-Automation/releases/tag/v1.2)*** for the simple Discord image sender, a webhook interaction tool.
+##### Please see ***[Release v1.2](https://github.com/Daethyra/Webhook-Automation/releases/tag/v1.2)*** for the simplest Discord image sender, a self-contained webhook interaction module.
 
 ## Discord-AIU (Automated Image Uploader)
 
@@ -13,6 +13,7 @@
 * **Image Validation and Compression** 🖼️: We now check your images for size and dimensions before sending. Plus, there's an optional image compression feature to reduce data usage.
 * **Retry Failed Images** 🔁: If any images fail to send, don't worry! We've got a new retry option to ensure your images reach their destination.
 * **Progress Report** 📊: Stay informed with our new progress report, detailing the number of images sent, skipped, and failed.
+* **Logs:** Easily access logs in `.csv` and `.txt`. ([Example](.github/logs-example.jpg))
 
 ## Requirements 📌
 
@@ -23,10 +24,10 @@
 
 1. Clone the repository or download the script.
 
-   - `git clone https://github.com/Daethyra/Multi-hooker.git`
+   - `git clone https://github.com/Daethyra/Discord-AIU.git`
 2. Install [Poetry](https://python-poetry.org/docs/#installation) if you haven't already.
 
-   - `pip install --no-cache-dir -r requirements.txt`
+   - `pip install --no-cache-dir poetry`
 3. Install the necessary libraries using Poetry.
 
    - `poetry install`
@@ -43,7 +44,7 @@ To send images from a specified folder:
 
 - `python main.py /path/to/your/folder`
 
-I hope you enjoy using Multi-Hooker! 🎈
+I hope you enjoy using Discord-AIU! 🎈
 
 ## License
 
