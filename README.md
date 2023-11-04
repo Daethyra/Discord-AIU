@@ -1,67 +1,59 @@
-##### Please see ***[Release v1.2](https://github.com/Daethyra/Webhook-Automation/releases/tag/v1.2)*** for the simplest Discord image sender, a self-contained webhook interaction module.
+# Discord Image Uploader
 
-## Discord-AIU (Automated Image Uploader)
+## Brief Description
 
-## Features 🌟
+`Discord Image Uploader` is an efficient Python module designed to upload images to Discord via a webhook. The module ensures image validation, robust error handling, and implements efficient request streaming and concurrent retries for failed uploads.
 
-* **Support for Various Formats** 🖼️: Send images with .jpg, .jpeg, .png, .gif, and .bmp file extensions.
-* **Choose Your Source** 📂: Specify a folder path or use the current working directory.
-* **Environment Variables** 🌍: Configure with ease and security! All settings have been moved to environment variables.
-* **Error Handling and Logging** 📝: Comprehensive error handling with automatic retry and rate limit handling. Plus, all logs are neatly saved in a CSV file for easy tracking.
-* **Concurrency** 🚄: Experience a significant speed boost when sharing many images thanks to our concurrency feature.
-* **Semaphore** 🚦: We've added a semaphore to ensure we don't overload servers. This is the first step towards enabling the use of multiple webhooks through LLM agents.
-* **Image Validation and Compression** 🖼️: We now check your images for size and dimensions before sending. Plus, there's an optional image compression feature to reduce data usage.
-* **Retry Failed Images** 🔁: If any images fail to send, don't worry! We've got a new retry option to ensure your images reach their destination.
-* **Progress Report** 📊: Stay informed with our new progress report, detailing the number of images sent, skipped, and failed.
-* **Logs:** Easily access logs in `.csv` and `.txt`. ([Example](.github/logs-example.jpg))
+## Installation Guide
 
-## Requirements 📌
+To install `Discord Image Uploader`, use PDM (Python Development Master):
 
-* Python 3.10 or higher
-* Poetry for dependency management
+1. **Install PDM**:
+   - Follow the installation instructions [here](https://pdm.fming.dev/latest/, "Official Site").
+   
+2. **Clone the Repository**:
+   - Clone the `Discord Image Uploader` repository to your local machine.
 
-## Installation 🛠️
+3. **Install Dependencies**:
+   - Navigate to the repository's root directory and run:
 
-1. Clone the repository or download the script.
+     ```sh
+     pdm install
+     ```
 
-   - `git clone https://github.com/Daethyra/Discord-AIU.git`
-2. Install [Poetry](https://python-poetry.org/docs/#installation) if you haven't already.
+## How to Use the Module
 
-   - `pip install --no-cache-dir poetry`
-3. Install the necessary libraries using Poetry.
+1. **Configure Webhook URL**:
+   - Replace `YOUR_WEBHOOK_URL_HERE` in `WEBHOOK_URL` with your Discord webhook URL.
 
-   - `poetry install`
+2. **Place Images**:
+   - Place images in `./images/` directory.
 
-## Usage 🚀
+3. **Run the Module**:
+   - Execute `pdm run ./src/discord_aiu.py`. The module will validate and upload the images, logging the process.
 
-Define your actual Discord webhook URL and other settings in a .env file in the project's root directory.
+4. **Check Logs**:
+   - Review `image_uploader.log` for logs and metrics related to the uploads.
 
-To send images from the current working directory:
+---
 
-- `python main.py`
+## Features
 
-To send images from a specified folder:
+- **Request Streaming**: Utilizes `requests.Session` for efficient connection handling.
 
-- `python main.py /path/to/your/folder`
+- **Session Reuse**: The same session is used for resending failed images, ensuring connection reuse.
 
-I hope you enjoy using Discord-AIU! 🎈
+- **Concurrent Retries**: Failed images are retried concurrently using `ThreadPoolExecutor`.
+
+- **Image Validation**: Validates image size and dimensions before upload.
+
+- **Error Handling**: Appropriately logs errors.
+
+- **Periodic Metrics Logging**: Logs metrics periodically during the upload process.
+
+---
+
+##### ***[Click here for the outdated, yet stable version: Release v1.2](https://github.com/Daethyra/Webhook-Automation/releases/tag/v1.2, "Direct link")***
 
 ## License
-
-Discord-AIU | Save time showing off your favorites.
-Copyright (C) 2023 Daethyra (Daemon Carino)
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, *[get one by clicking here.](https://www.gnu.org/licenses/)*
-
-*This project is licensed under the terms of the [GNU_AGPL-License](./LICENSE).*
+This project is licensed under the GNU Affero General Public License (APL).
