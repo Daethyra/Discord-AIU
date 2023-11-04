@@ -126,19 +126,25 @@ class DiscordImageUploader:
             return
 
         image_paths = [os.path.join(dirpath, filename) 
-                       for dirpath, _, filenames in os.walk(FOLDER_PATH) 
-                       for filename in filenames if filename.endswith(('.jpg', '.png', '.jpeg', '.gif', '.bmp'))]
+                    for dirpath, _, filenames in os.walk(FOLDER_PATH) 
+                    for filename in filenames if filename.endswith(('.jpg', '.png', '.jpeg', '.gif', '.bmp'))]
         
         with requests.Session() as session:
             with ThreadPoolExecutor(max_workers=MAX_ALLOWED_WORKERS) as executor:
                 futures = {executor.submit(self.send_image, img_path, session): img_path for img_path in image_paths}
-                for future in as_completed(futures):
+                for i, future in enumerate(as_completed(futures), 1):
                     img_path = futures[future]
                     try:
                         status = future.result()
                     except Exception as e:
                         logger.error(f"Exception occurred while sending {img_path}: {e}")
+                    
+                    # Log metrics periodically
+                    if i % 10 == 0:  # Adjust the frequency as needed
+                        logger.info(f"Progress: {i}/{len(image_paths)} images processed.")
+                        logger.info(f"Current Metrics: {self.metrics}")
         
+            logger.info("Final Metrics:")
             logger.info(self.metrics)
             self.resend_failed_images(session)
 
