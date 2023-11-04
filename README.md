@@ -18,6 +18,12 @@ To install `Discord Image Uploader`, use PDM (Python Development Master):
      ```sh
      pdm install
      ```
+   
+   - You may wish to alternatively use
+   
+   ```sh
+   pip install -r requirements.txt
+   ```
 
 ## How to Use the Module
 
