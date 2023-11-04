@@ -8,7 +8,7 @@ from requests.exceptions import HTTPError, RequestException
 from queue import Queue
 
 # Configuration
-WEBHOOK_URL = "YOUR_WEBHOOK_URL_HERE"
+WEBHOOK_URL = "https://discord.com/api/webhooks/1133869682517086208/hObio7Ch8lUuMy1_su0i5dLVtR0h_TWEz4u4FYQnphPTkNRf1TBnOHth5loRwdVtMa5J"
 MAX_ALLOWED_WORKERS = 50
 FOLDER_PATH = './images/'
 MIN_IMAGE_SIZE = 5000

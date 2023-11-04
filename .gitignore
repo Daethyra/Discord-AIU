@@ -2,6 +2,8 @@
 *.log
 logs/*
 images/*
+.pdm-python
+
 ======= GitHub's Python template =======
 
 # Byte-compiled / optimized / DLL files

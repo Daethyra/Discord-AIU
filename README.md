@@ -1,9 +1,11 @@
 # Discord Image Uploader
 
 ## Brief Description
+
 `Discord Image Uploader` is an efficient Python module designed to upload images to Discord via a webhook. The module ensures image validation, robust error handling, and implements efficient request streaming and concurrent retries for failed uploads.
 
 ## Installation Guide
+
 To install `Discord Image Uploader`, use PDM (Python Development Master):
 
 1. **Install PDM**:
@@ -28,7 +30,7 @@ To install `Discord Image Uploader`, use PDM (Python Development Master):
    - Place images in `./images/` directory.
 
 3. **Run the Module**:
-   - Execute `__init__.py`. The module will validate and upload the images, logging the process.
+   - Execute `pdm run ./src/discord_aiu.py`. The module will validate and upload the images, logging the process.
 
 4. **Check Logs**:
    - Review `image_uploader.log` for logs and metrics related to the uploads.
