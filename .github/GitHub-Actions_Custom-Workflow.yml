@@ -9,9 +9,9 @@ on:
       - main
       # Uncomment and add other branches to run the workflow on
       # - working/*
-  pull_request:
-    branches:
-      - main
+  #pull_request:
+    #branches:
+      #- main
       # Uncomment and add other branches to run the workflow on
       # - working/*
 
