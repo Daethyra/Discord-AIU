@@ -3,6 +3,8 @@ import time
 import logging
 import argparse
 import random
+import argparse
+import random
 import requests
 from PIL import Image, UnidentifiedImageError
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -60,6 +62,8 @@ class DiscordImageUploader:
         """
         Initialize DiscordImageUploader with configurable parameters.
         
+        Initialize DiscordImageUploader with configurable parameters.
+        
         Parameters:
             webhook_url (str): Discord webhook URL (required)
             max_workers (int): Maximum concurrent workers (default: 3)
@@ -85,17 +89,27 @@ class DiscordImageUploader:
         """
         Validate the size and dimensions of the image.
         
+        
         Parameters:
             image_path (str): Path to the image file.
             
+            
         Raises:
             ValueError: If the image size or dimensions are invalid.
+            UnidentifiedImageError: If the image cannot be opened.
             UnidentifiedImageError: If the image cannot be opened.
         """
         if not os.path.exists(image_path):
             raise ValueError(f"Image file does not exist: {image_path}")
             
+        if not os.path.exists(image_path):
+            raise ValueError(f"Image file does not exist: {image_path}")
+            
         file_size = os.path.getsize(image_path)
+        if file_size < self.min_image_size:
+            raise ValueError(f"Image too small: {image_path} ({file_size} bytes < {self.min_image_size} bytes)")
+        if file_size > self.max_image_size:
+            raise ValueError(f"Image too large: {image_path} ({file_size} bytes > {self.max_image_size} bytes)")
         if file_size < self.min_image_size:
             raise ValueError(f"Image too small: {image_path} ({file_size} bytes < {self.min_image_size} bytes)")
         if file_size > self.max_image_size:
@@ -105,19 +119,29 @@ class DiscordImageUploader:
             width, height = img.size
             if width < self.min_image_width or height < self.min_image_height:
                 raise ValueError(f"Image dimensions too small: {image_path} ({width}x{height} < {self.min_image_width}x{self.min_image_height})")
+            if width < self.min_image_width or height < self.min_image_height:
+                raise ValueError(f"Image dimensions too small: {image_path} ({width}x{height} < {self.min_image_width}x{self.min_image_height})")
 
     def send_image(self, image_path: str, session: requests.Session) -> str:
         """
+        Upload an image to Discord with retry logic.
+        
         Upload an image to Discord with retry logic.
         
         Parameters:
             image_path (str): Path to the image file.
             session (requests.Session): Requests session for connection pooling.
             
+            session (requests.Session): Requests session for connection pooling.
+            
         Returns:
+            str: Status indicating 'sent' or 'failed'
             str: Status indicating 'sent' or 'failed'
         """
         retries = 0
+        current_backoff = self.backoff_delay
+        
+        while retries <= self.max_retries:
         current_backoff = self.backoff_delay
         
         while retries <= self.max_retries:
@@ -129,12 +153,20 @@ class DiscordImageUploader:
                         files={'file': (os.path.basename(image_path), img_file)},
                         timeout=30
                     )
+                    response = session.post(
+                        self.webhook_url, 
+                        files={'file': (os.path.basename(image_path), img_file)},
+                        timeout=30
+                    )
                     response.raise_for_status()
                     self.metrics["sent"] += 1
                     logger.info(f"✅ Successfully sent: {image_path}")
+                    logger.info(f"✅ Successfully sent: {image_path}")
                     return "sent"
                     
+                    
             except (HTTPError, RequestException, ValueError, UnidentifiedImageError) as e:
+                logger.warning(f"⚠️ Attempt {retries + 1}/{self.max_retries + 1} failed for {image_path}: {e}")
                 logger.warning(f"⚠️ Attempt {retries + 1}/{self.max_retries + 1} failed for {image_path}: {e}")
                 self.metrics["retried"] += 1
                 
@@ -142,9 +174,16 @@ class DiscordImageUploader:
                     break
                     
                 time.sleep(current_backoff)
+                
+                if retries == self.max_retries:
+                    break
+                    
+                time.sleep(current_backoff)
                 retries += 1
                 current_backoff *= 2  # Exponential backoff
+                current_backoff *= 2  # Exponential backoff
         
+        logger.error(f"❌ Failed after {self.max_retries + 1} attempts: {image_path}")
         logger.error(f"❌ Failed after {self.max_retries + 1} attempts: {image_path}")
         self.metrics["failed"] += 1
         self.failed_queue.put(image_path)
@@ -164,15 +203,35 @@ class DiscordImageUploader:
                 for img_path in list(self.failed_queue.queue)
             }
             
+        """Retry images that failed during initial upload."""
+        if self.failed_queue.empty():
+            return
+            
+        failed_count = self.failed_queue.qsize()
+        logger.info(f"🔄 Retrying {failed_count} failed images...")
+        
+        with ThreadPoolExecutor(max_workers=min(self.max_workers, failed_count)) as executor:
+            futures = {
+                executor.submit(self.send_image, img_path, session): img_path 
+                for img_path in list(self.failed_queue.queue)
+            }
+            
             for future in as_completed(futures):
                 img_path = futures[future]
                 try:
                     future.result()
+                    future.result()
                 except Exception as e:
+                    logger.error(f"💥 Critical error during retry of {img_path}: {e}")
                     logger.error(f"💥 Critical error during retry of {img_path}: {e}")
 
     def upload_images(self, image_paths: list) -> None:
+    def upload_images(self, image_paths: list) -> None:
         """
+        Upload multiple images with concurrent workers.
+        
+        Parameters:
+            image_paths (list): List of image file paths to upload
         Upload multiple images with concurrent workers.
         
         Parameters:
@@ -180,7 +239,12 @@ class DiscordImageUploader:
         """
         if not image_paths:
             logger.error("❌ No images provided for upload")
+        if not image_paths:
+            logger.error("❌ No images provided for upload")
             return
+
+        total_images = len(image_paths)
+        logger.info(f"🚀 Starting upload of {total_images} images with {self.max_workers} workers")
 
         total_images = len(image_paths)
         logger.info(f"🚀 Starting upload of {total_images} images with {self.max_workers} workers")
@@ -193,9 +257,17 @@ class DiscordImageUploader:
                     for img_path in image_paths
                 }
                 
+            # Initial upload pass
+            with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+                futures = {
+                    executor.submit(self.send_image, img_path, session): img_path 
+                    for img_path in image_paths
+                }
+                
                 for i, future in enumerate(as_completed(futures), 1):
                     img_path = futures[future]
                     try:
+                        future.result()
                         future.result()
                     except Exception as e:
                         logger.error(f"💥 Unexpected error with {img_path}: {e}")
@@ -368,4 +440,5 @@ Examples:
         return 1
 
 if __name__ == '__main__':
+    exit(main())
     exit(main())
