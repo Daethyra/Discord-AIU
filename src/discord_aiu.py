@@ -12,7 +12,7 @@ from queue import Queue
 
 # Set your webhook URL here if you don't want to pass it as argument every time
 # Leave as None to require --webhook-url argument
-HARDCODED_WEBHOOK_URL = "https://discord.com/api/webhooks/1128867524851810435/rk0bNAuUbzzseB6XQSBWoMGy1EDF9bWO8GgERYP_QxqB1SEDdku3tIkpRFOG14_YpRSE"  # or set to "https://discord.com/api/webhooks/..."
+HARDCODED_WEBHOOK_URL = None  # or set to "https://discord.com/api/webhooks/..."
 
 # Default folder for images (can be overridden by --folder argument)
 DEFAULT_FOLDER_PATH = './images/'
