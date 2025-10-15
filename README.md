@@ -6,7 +6,14 @@
 
 ## Installation Guide
 
-To install `Discord Image Uploader`, use PDM (Python Development Master):
+To use the script, clone the repository or download and unpack the latest release, the run:
+`python src/discord_aiu.py --webhook_url <your webhook>`
+
+You may also change the hardcoded webhook URL in the script itself.
+
+## Contribution Guide
+
+To contribute, install `Discord Image Uploader`, use PDM (Python Development Master):
 
 1. **Install PDM**:
    - Follow the installation instructions [here](https://pdm.fming.dev/latest/, "Official Site").
