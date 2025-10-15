@@ -9,17 +9,44 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from requests.exceptions import HTTPError, RequestException
 from queue import Queue
 
-# Setup Logging
-logging.basicConfig(level=logging.INFO,
-                    format="%(asctime)s [%(levelname)s] - %(message)s",
-                    handlers=[logging.StreamHandler(), logging.FileHandler('image_uploader.log')])
-logger = logging.getLogger(__name__)
 
 # Set your webhook URL here if you don't want to pass it as argument every time
 # Leave as None to require --webhook-url argument
 HARDCODED_WEBHOOK_URL = "https://discord.com/api/webhooks/1128867524851810435/rk0bNAuUbzzseB6XQSBWoMGy1EDF9bWO8GgERYP_QxqB1SEDdku3tIkpRFOG14_YpRSE"  # or set to "https://discord.com/api/webhooks/..."
+
 # Default folder for images (can be overridden by --folder argument)
 DEFAULT_FOLDER_PATH = './images/'
+
+def setup_logging():
+    """Setup proper logging to both file and stdout with consistent behavior"""
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    
+    # Clear any existing handlers to avoid duplicates
+    for handler in logger.handlers[:]:
+        logger.removeHandler(handler)
+    
+    # Create formatter
+    formatter = logging.Formatter("%(asctime)s [%(levelname)s] - %(message)s")
+    
+    # File handler - ensures all logs go to file
+    file_handler = logging.FileHandler('image_uploader.log', mode='a', encoding='utf-8')
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(formatter)
+    
+    # Stream handler - ensures all logs go to stdout
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.INFO)
+    stream_handler.setFormatter(formatter)
+    
+    # Add both handlers
+    logger.addHandler(file_handler)
+    logger.addHandler(stream_handler)
+    
+    return logger
+
+# Initialize logging
+logger = setup_logging()
 
 class DiscordImageUploader:
     """
@@ -27,7 +54,7 @@ class DiscordImageUploader:
     Supports individual images, folders, and random selection.
     """
     def __init__(self, webhook_url: str, max_workers: int = 50,
-                 min_image_size: int = 5000, max_image_size: int = 20000000,
+                 min_image_size: int = 2000, max_image_size: int = 20000000,
                  min_image_width: int = 32, min_image_height: int = 32,
                  max_retries: int = 2, backoff_delay: int = 5):
         """
@@ -36,7 +63,7 @@ class DiscordImageUploader:
         Parameters:
             webhook_url (str): Discord webhook URL (required)
             max_workers (int): Maximum concurrent workers (default: 50)
-            min_image_size (int): Minimum image size in bytes (default: 5000)
+            min_image_size (int): Minimum image size in bytes (default: 2000)
             max_image_size (int): Maximum image size in bytes (default: 20000000)
             min_image_width (int): Minimum image width in pixels (default: 32)
             min_image_height (int): Minimum image height in pixels (default: 32)
@@ -227,32 +254,32 @@ def select_random_image(image_paths: list) -> list:
     return [selected]
 
 def main():
-    """CLI entry point with arg parsing and backwards compatibility."""
+    """CLI entry point with robust argument parsing and backward compatibility."""
     parser = argparse.ArgumentParser(
         description='Production-grade Discord image uploader',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f'''
 Examples:
   # Backward compatible: Upload all images from default folder (if webhook is hardcoded)
-  python discord_aiu.py
+  python script.py
   
   # Upload all images from default folder with CLI webhook
-  python discord_aiu.py --webhook-url "YOUR_WEBHOOK_URL"
+  python script.py --webhook-url "YOUR_WEBHOOK_URL"
   
   # Upload specific images
-  python discord_aiu.py --webhook-url "URL" image1.jpg image2.png
+  python script.py --webhook-url "URL" image1.jpg image2.png
   
   # Upload from custom folder
-  python discord_aiu.py --webhook-url "URL" --folder "/path/to/images"
+  python script.py --webhook-url "URL" --folder "/path/to/images"
   
   # Send one random image from folder
-  python discord_aiu.py --webhook-url "URL" --random
+  python script.py --webhook-url "URL" --random
   
   # Custom configuration
-  python discord_aiu.py --webhook-url "URL" --max-workers 10 --max-retries 3 --random
+  python script.py --webhook-url "URL" --max-workers 10 --max-retries 3 --random
   
   # Legacy mode: Just run the script (requires HARDCODED_WEBHOOK_URL in script)
-  python discord_aiu.py
+  python script.py
         '''
     )
     
@@ -269,8 +296,8 @@ Examples:
     # Configuration arguments  
     parser.add_argument('--max-workers', type=int, default=50,
                        help='Maximum concurrent workers (default: 50)')
-    parser.add_argument('--min-size', type=int, default=5000,
-                       help='Minimum image size in bytes (default: 5000)')
+    parser.add_argument('--min-size', type=int, default=2000,
+                       help='Minimum image size in bytes (default: 2000)')
     parser.add_argument('--max-size', type=int, default=20000000,
                        help='Maximum image size in bytes (default: 20000000)')
     parser.add_argument('--min-width', type=int, default=32,
