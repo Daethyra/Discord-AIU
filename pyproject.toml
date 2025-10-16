@@ -15,4 +15,4 @@ python-dotenv = "^1.0.0"
 requests = "^2.31.0"
 
 [tool.poetry.group.dev.dependencies]
-pyproject-toml = "^0.0.10"
+pyproject-toml = "^0.0.12"
