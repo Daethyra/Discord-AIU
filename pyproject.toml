@@ -4,8 +4,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "discord_aiu"
-version = "1.0.1"
-description = "Automagically upload your images to a Discord channel via webhook."
+version = "1.2.0"
+description = "Automagically upload images to a Discord channel via webhook."
 authors = ["Daethyra <dev-daethyra@c-sec.8shield.net>"]
 
 [tool.poetry.dependencies]
